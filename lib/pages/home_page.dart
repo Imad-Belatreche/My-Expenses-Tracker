@@ -23,7 +23,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   void _openAddExpense() {
     showModalBottomSheet(
+      useSafeArea: true,
       isScrollControlled: true,
+      constraints: const BoxConstraints(
+        maxWidth: double.infinity,
+      ),
       context: context,
       builder: (ctx) => AddExpenseForm(addExpense: _addExpense),
     );
@@ -62,6 +66,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -78,20 +84,37 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: 250,
-            child: Chart(expenses: expenseList),
-          ),
-          Expanded(
-            child: ExpenseList(
-              removeExpense: _removeExpense,
-              expenses: expenseList,
+      body: width < 500
+          ? Column(
+              children: [
+                SizedBox(
+                  height: 250,
+                  child: Chart(expenses: expenseList),
+                ),
+                Expanded(
+                  child: ExpenseList(
+                    removeExpense: _removeExpense,
+                    expenses: expenseList,
+                  ),
+                ),
+              ],
+            )
+          : Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: 250,
+                    child: Chart(expenses: expenseList),
+                  ),
+                ),
+                Expanded(
+                  child: ExpenseList(
+                    removeExpense: _removeExpense,
+                    expenses: expenseList,
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }
